@@ -23,7 +23,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.assets = (( ) => {
+µBlock.assets = (( ) => {
 
 /******************************************************************************/
 
@@ -65,7 +65,7 @@ api.fetch = function(url, options = {}) {
     return new Promise((resolve, reject) => {
     // Start of executor
 
-    const timeoutAfter = ÂµBlock.hiddenSettings.assetFetchTimeout * 1000 || 30000;
+    const timeoutAfter = µBlock.hiddenSettings.assetFetchTimeout * 1000 || 30000;
     const xhr = new XMLHttpRequest();
     let contentLoaded = 0;
     let timeoutTimer;
@@ -82,7 +82,7 @@ api.fetch = function(url, options = {}) {
     };
 
     const fail = function(details, msg) {
-        ÂµBlock.logger.writeOne({
+        µBlock.logger.writeOne({
             realm: 'message',
             type: 'error',
             text: msg,
@@ -163,7 +163,7 @@ api.fetchText = async function(url) {
     //   the browser cache.
     if ( isExternal ) {
         const cacheBypassToken =
-            ÂµBlock.hiddenSettings.updateAssetBypassBrowserCache
+            µBlock.hiddenSettings.updateAssetBypassBrowserCache
                 ? Math.floor(Date.now() /    1000) % 86400
                 : Math.floor(Date.now() / 3600000) %    12;
         const queryValue = `_=${cacheBypassToken}`;
@@ -307,7 +307,7 @@ let assetSourceRegistryPromise,
 
 const getAssetSourceRegistry = function() {
     if ( assetSourceRegistryPromise === undefined ) {
-        assetSourceRegistryPromise = ÂµBlock.cacheStorage.get(
+        assetSourceRegistryPromise = µBlock.cacheStorage.get(
             'assetSourceRegistry'
         ).then(bin => {
             if (
@@ -318,7 +318,7 @@ const getAssetSourceRegistry = function() {
                 return assetSourceRegistry;
             }
             return api.fetchText(
-                ÂµBlock.assetsBootstrapLocation || 'assets/assets.json'
+                µBlock.assetsBootstrapLocation || 'assets/assets.json'
             ).then(details => {
                 return details.content !== ''
                     ? details
@@ -379,7 +379,7 @@ const saveAssetSourceRegistry = (( ) => {
     let timer;
     const save = function() {
         timer = undefined;
-        ÂµBlock.cacheStorage.set({ assetSourceRegistry });
+        µBlock.cacheStorage.set({ assetSourceRegistry });
     };
     return function(lazily) {
         if ( timer !== undefined ) {
@@ -450,7 +450,7 @@ let assetCacheRegistry = {};
 
 const getAssetCacheRegistry = function() {
     if ( assetCacheRegistryPromise === undefined ) {
-        assetCacheRegistryPromise = ÂµBlock.cacheStorage.get(
+        assetCacheRegistryPromise = µBlock.cacheStorage.get(
             'assetCacheRegistry'
         ).then(bin => {
             if (
@@ -470,7 +470,7 @@ const saveAssetCacheRegistry = (( ) => {
     let timer;
     const save = function() {
         timer = undefined;
-        ÂµBlock.cacheStorage.set({ assetCacheRegistry });
+        µBlock.cacheStorage.set({ assetCacheRegistry });
     };
     return function(lazily) {
         if ( timer !== undefined ) { clearTimeout(timer); }
@@ -494,7 +494,7 @@ const assetCacheRead = async function(assetKey, updateReadTime = false) {
 
     const [ , bin ] = await Promise.all([
         getAssetCacheRegistry(),
-        ÂµBlock.cacheStorage.get(internalKey),
+        µBlock.cacheStorage.get(internalKey),
     ]);
     if (
         bin instanceof Object === false ||
@@ -538,7 +538,7 @@ const assetCacheWrite = async function(assetKey, details) {
     if ( details instanceof Object && typeof details.url === 'string' ) {
         entry.remoteURL = details.url;
     }
-    ÂµBlock.cacheStorage.set({
+    µBlock.cacheStorage.set({
         assetCacheRegistry,
         [`cache/${assetKey}`]: content
     });
@@ -565,8 +565,8 @@ const assetCacheRemove = async function(pattern) {
         delete cacheDict[assetKey];
     }
     if ( removedContent.length !== 0 ) {
-        ÂµBlock.cacheStorage.remove(removedContent);
-        ÂµBlock.cacheStorage.set({ assetCacheRegistry });
+        µBlock.cacheStorage.remove(removedContent);
+        µBlock.cacheStorage.set({ assetCacheRegistry });
     }
     for ( let i = 0; i < removedEntries.length; i++ ) {
         fireNotification(
@@ -600,7 +600,7 @@ const assetCacheMarkAsDirty = async function(pattern, exclude) {
         mustSave = true;
     }
     if ( mustSave ) {
-        ÂµBlock.cacheStorage.set({ assetCacheRegistry });
+        µBlock.cacheStorage.set({ assetCacheRegistry });
     }
 };
 
@@ -651,7 +651,7 @@ const saveUserAsset = function(assetKey, content) {
 /******************************************************************************/
 
 api.get = async function(assetKey, options = {}) {
-    if ( assetKey === ÂµBlock.userFiltersPath ) {
+    if ( assetKey === µBlock.userFiltersPath ) {
         return readUserAsset(assetKey);
     }
 
@@ -935,7 +935,7 @@ api.updateStop = function() {
 
 api.isUpdating = function() {
     return updaterStatus === 'updating' &&
-           updaterAssetDelay <= ÂµBlock.hiddenSettings.manualUpdateAssetFetchPeriod;
+           updaterAssetDelay <= µBlock.hiddenSettings.manualUpdateAssetFetchPeriod;
 };
 
 /******************************************************************************/

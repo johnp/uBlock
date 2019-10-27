@@ -28,22 +28,22 @@
 (async ( ) => {
 // >>>>> start of private scope
 
-const Âµb = ÂµBlock;
+const µb = µBlock;
 
 /******************************************************************************/
 
 vAPI.app.onShutdown = function() {
-    const Âµb = ÂµBlock;
-    Âµb.staticFilteringReverseLookup.shutdown();
-    Âµb.assets.updateStop();
-    Âµb.staticNetFilteringEngine.reset();
-    Âµb.staticExtFilteringEngine.reset();
-    Âµb.sessionFirewall.reset();
-    Âµb.permanentFirewall.reset();
-    Âµb.sessionURLFiltering.reset();
-    Âµb.permanentURLFiltering.reset();
-    Âµb.sessionSwitches.reset();
-    Âµb.permanentSwitches.reset();
+    const µb = µBlock;
+    µb.staticFilteringReverseLookup.shutdown();
+    µb.assets.updateStop();
+    µb.staticNetFilteringEngine.reset();
+    µb.staticExtFilteringEngine.reset();
+    µb.sessionFirewall.reset();
+    µb.permanentFirewall.reset();
+    µb.sessionURLFiltering.reset();
+    µb.permanentURLFiltering.reset();
+    µb.sessionSwitches.reset();
+    µb.permanentSwitches.reset();
 };
 
 /******************************************************************************/
@@ -63,8 +63,8 @@ const initializeTabs = async function() {
         file: 'js/scriptlets/should-inject-contentscript.js'
     };
     for ( const tab of tabs  ) {
-        Âµb.tabContextManager.commit(tab.id, tab.url);
-        Âµb.bindTabToPageStats(tab.id);
+        µb.tabContextManager.commit(tab.id, tab.url);
+        µb.bindTabToPageStats(tab.id);
         // https://github.com/chrisaljoudi/uBlock/issues/129
         //   Find out whether content scripts need to be injected
         //   programmatically. This may be necessary for web pages which
@@ -97,8 +97,8 @@ const initializeTabs = async function() {
 
 const onCommandShortcutsReady = function(commandShortcuts) {
     if ( Array.isArray(commandShortcuts) === false ) { return; }
-    Âµb.commandShortcuts = new Map(commandShortcuts);
-    if ( Âµb.canUpdateShortcuts === false ) { return; }
+    µb.commandShortcuts = new Map(commandShortcuts);
+    if ( µb.canUpdateShortcuts === false ) { return; }
     for ( const entry of commandShortcuts ) {
         vAPI.commands.update({ name: entry[0], shortcut: entry[1] });
     }
@@ -113,16 +113,16 @@ const onVersionReady = function(lastVersion) {
 
     // Since built-in resources may have changed since last version, we
     // force a reload of all resources.
-    Âµb.redirectEngine.invalidateResourcesSelfie();
+    µb.redirectEngine.invalidateResourcesSelfie();
 
     const lastVersionInt = vAPI.app.intFromVersion(lastVersion);
 
     // https://github.com/uBlockOrigin/uBlock-issues/issues/494
     //   Remove useless per-site switches.
     if ( lastVersionInt <= 1019003007 ) {
-        Âµb.sessionSwitches.toggle('no-scripting', 'behind-the-scene', 0);
-        Âµb.permanentSwitches.toggle('no-scripting', 'behind-the-scene', 0);
-        Âµb.saveHostnameSwitches();
+        µb.sessionSwitches.toggle('no-scripting', 'behind-the-scene', 0);
+        µb.permanentSwitches.toggle('no-scripting', 'behind-the-scene', 0);
+        µb.saveHostnameSwitches();
     }
 
     vAPI.storage.set({ version: vAPI.app.version });
@@ -139,8 +139,8 @@ const onNetWhitelistReady = function(netWhitelistRaw) {
     if ( typeof netWhitelistRaw === 'string' ) {
         netWhitelistRaw = netWhitelistRaw.split('\n');
     }
-    Âµb.netWhitelist = Âµb.whitelistFromArray(netWhitelistRaw);
-    Âµb.netWhitelistModifyTime = Date.now();
+    µb.netWhitelist = µb.whitelistFromArray(netWhitelistRaw);
+    µb.netWhitelistModifyTime = Date.now();
 };
 
 /******************************************************************************/
@@ -148,11 +148,11 @@ const onNetWhitelistReady = function(netWhitelistRaw) {
 // User settings are in memory
 
 const onUserSettingsReady = function(fetched) {
-    const userSettings = Âµb.userSettings;
+    const userSettings = µb.userSettings;
 
     fromFetch(userSettings, fetched);
 
-    if ( Âµb.privacySettingsSupported ) {
+    if ( µb.privacySettingsSupported ) {
         vAPI.browserSettings.set({
             'hyperlinkAuditing': !userSettings.hyperlinkAuditingDisabled,
             'prefetching': !userSettings.prefetchingDisabled,
@@ -160,12 +160,12 @@ const onUserSettingsReady = function(fetched) {
         });
     }
 
-    Âµb.permanentFirewall.fromString(fetched.dynamicFilteringString);
-    Âµb.sessionFirewall.assign(Âµb.permanentFirewall);
-    Âµb.permanentURLFiltering.fromString(fetched.urlFilteringString);
-    Âµb.sessionURLFiltering.assign(Âµb.permanentURLFiltering);
-    Âµb.permanentSwitches.fromString(fetched.hostnameSwitchesString);
-    Âµb.sessionSwitches.assign(Âµb.permanentSwitches);
+    µb.permanentFirewall.fromString(fetched.dynamicFilteringString);
+    µb.sessionFirewall.assign(µb.permanentFirewall);
+    µb.permanentURLFiltering.fromString(fetched.urlFilteringString);
+    µb.sessionURLFiltering.assign(µb.permanentURLFiltering);
+    µb.permanentSwitches.fromString(fetched.hostnameSwitchesString);
+    µb.sessionSwitches.assign(µb.permanentSwitches);
 };
 
 /******************************************************************************/
@@ -174,17 +174,17 @@ const onUserSettingsReady = function(fetched) {
 
 const onSystemSettingsReady = function(fetched) {
     let mustSaveSystemSettings = false;
-    if ( fetched.compiledMagic !== Âµb.systemSettings.compiledMagic ) {
-        Âµb.assets.remove(/^compiled\//);
+    if ( fetched.compiledMagic !== µb.systemSettings.compiledMagic ) {
+        µb.assets.remove(/^compiled\//);
         mustSaveSystemSettings = true;
     }
-    if ( fetched.selfieMagic !== Âµb.systemSettings.selfieMagic ) {
+    if ( fetched.selfieMagic !== µb.systemSettings.selfieMagic ) {
         mustSaveSystemSettings = true;
     }
     if ( mustSaveSystemSettings ) {
         fetched.selfie = null;
-        Âµb.selfieManager.destroy();
-        vAPI.storage.set(Âµb.systemSettings);
+        µb.selfieManager.destroy();
+        vAPI.storage.set(µb.systemSettings);
     }
 };
 
@@ -200,9 +200,9 @@ const onFirstFetchReady = function(fetched) {
 
     // Order is important -- do not change:
     onSystemSettingsReady(fetched);
-    fromFetch(Âµb.localSettings, fetched);
+    fromFetch(µb.localSettings, fetched);
     onUserSettingsReady(fetched);
-    fromFetch(Âµb.restoreBackupSettings, fetched);
+    fromFetch(µb.restoreBackupSettings, fetched);
     onNetWhitelistReady(fetched.netWhitelist);
     onVersionReady(fetched.version);
     onCommandShortcutsReady(fetched.commandShortcuts);
@@ -246,13 +246,13 @@ const createDefaultProps = function() {
         'lastRestoreTime': 0,
         'lastBackupFile': '',
         'lastBackupTime': 0,
-        'netWhitelist': Âµb.netWhitelistDefault,
+        'netWhitelist': µb.netWhitelistDefault,
         'selfieMagic': 0,
         'version': '0.0.0.0'
     };
-    toFetch(Âµb.localSettings, fetchableProps);
-    toFetch(Âµb.userSettings, fetchableProps);
-    toFetch(Âµb.restoreBackupSettings, fetchableProps);
+    toFetch(µb.localSettings, fetchableProps);
+    toFetch(µb.userSettings, fetchableProps);
+    toFetch(µb.restoreBackupSettings, fetchableProps);
     return fetchableProps;
 };
 
@@ -260,35 +260,35 @@ const createDefaultProps = function() {
 
 try {
     // https://github.com/gorhill/uBlock/issues/531
-    await Âµb.restoreAdminSettings();
+    await µb.restoreAdminSettings();
     log.info(`Admin settings ready ${Date.now()-vAPI.T0} ms after launch`);
 
-    await Âµb.loadHiddenSettings();
+    await µb.loadHiddenSettings();
     log.info(`Hidden settings ready ${Date.now()-vAPI.T0} ms after launch`);
 
-    const cacheBackend = await Âµb.cacheStorage.select(
-        Âµb.hiddenSettings.cacheStorageAPI
+    const cacheBackend = await µb.cacheStorage.select(
+        µb.hiddenSettings.cacheStorageAPI
     );
     log.info(`Backend storage for cache will be ${cacheBackend}`);
 
     await Promise.all([
-        Âµb.loadSelectedFilterLists().then(( ) => {
+        µb.loadSelectedFilterLists().then(( ) => {
             log.info(`List selection ready ${Date.now()-vAPI.T0} ms after launch`);
         }),
         vAPI.storage.get(createDefaultProps()).then(fetched => {
             log.info(`First fetch ready ${Date.now()-vAPI.T0} ms after launch`);
             onFirstFetchReady(fetched);
         }),
-        Âµb.loadPublicSuffixList().then(( ) => {
+        µb.loadPublicSuffixList().then(( ) => {
             log.info(`PSL ready ${Date.now()-vAPI.T0} ms after launch`);
         }),
     ]);
 
-    const selfieIsValid = await Âµb.selfieManager.load();
+    const selfieIsValid = await µb.selfieManager.load();
     if ( selfieIsValid === true ) {
         log.info(`Selfie ready ${Date.now()-vAPI.T0} ms after launch`);
     } else {
-        await Âµb.loadFilterLists();
+        await µb.loadFilterLists();
         log.info(`Filter lists ready ${Date.now()-vAPI.T0} ms after launch`);
     }
 } catch (ex) {
@@ -298,37 +298,37 @@ try {
 // Final initialization steps after all needed assets are in memory.
 
 // Start network observers.
-Âµb.webRequest.start();
+µb.webRequest.start();
 
 // Ensure that the resources allocated for decompression purpose (likely
 // large buffers) are garbage-collectable immediately after launch.
 // Otherwise I have observed that it may take quite a while before the
 // garbage collection of these resources kicks in. Relinquishing as soon
 // as possible ensure minimal memory usage baseline.
-Âµb.lz4Codec.relinquish();
+µb.lz4Codec.relinquish();
 
 // Initialize internal state with maybe already existing tabs.
 initializeTabs();
 
 // https://github.com/chrisaljoudi/uBlock/issues/184
 //   Check for updates not too far in the future.
-Âµb.assets.addObserver(Âµb.assetObserver.bind(Âµb));
-Âµb.scheduleAssetUpdater(
-    Âµb.userSettings.autoUpdate
-        ? Âµb.hiddenSettings.autoUpdateDelayAfterLaunch * 1000
+µb.assets.addObserver(µb.assetObserver.bind(µb));
+µb.scheduleAssetUpdater(
+    µb.userSettings.autoUpdate
+        ? µb.hiddenSettings.autoUpdateDelayAfterLaunch * 1000
         : 0
 );
 
 // Force an update of the context menu according to the currently
 // active tab.
-Âµb.contextMenu.update();
+µb.contextMenu.update();
 
 // https://github.com/uBlockOrigin/uBlock-issues/issues/717
 //   Prevent the extension from being restarted mid-session.
 browser.runtime.onUpdateAvailable.addListener(details => {
     const toInt = vAPI.app.intFromVersion;
     if (
-        ÂµBlock.hiddenSettings.extensionUpdateForceReload === true ||
+        µBlock.hiddenSettings.extensionUpdateForceReload === true ||
         toInt(details.version) <= toInt(vAPI.app.version)
     ) {
         vAPI.app.restart();

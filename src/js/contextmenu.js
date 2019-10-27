@@ -23,7 +23,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.contextMenu = (( ) => {
+µBlock.contextMenu = (( ) => {
 
 /******************************************************************************/
 
@@ -57,15 +57,15 @@ const onBlockElement = function(details, tab) {
         }
     }
 
-    ÂµBlock.epickerArgs.mouse = true;
-    ÂµBlock.elementPickerExec(tab.id, tagName + '\t' + src);
+    µBlock.epickerArgs.mouse = true;
+    µBlock.elementPickerExec(tab.id, tagName + '\t' + src);
 };
 
 /******************************************************************************/
 
 const onTemporarilyAllowLargeMediaElements = function(details, tab) {
     if ( tab === undefined ) { return; }
-    let pageStore = ÂµBlock.pageStoreFromTabId(tab.id);
+    let pageStore = µBlock.pageStoreFromTabId(tab.id);
     if ( pageStore === null ) { return; }
     pageStore.temporarilyAllowLargeMediaElements(true);
 };
@@ -102,8 +102,8 @@ let currentBits = 0;
 
 const update = function(tabId = undefined) {
     let newBits = 0;
-    if ( ÂµBlock.userSettings.contextMenuEnabled && tabId !== undefined ) {
-        let pageStore = ÂµBlock.pageStoreFromTabId(tabId);
+    if ( µBlock.userSettings.contextMenuEnabled && tabId !== undefined ) {
+        let pageStore = µBlock.pageStoreFromTabId(tabId);
         if ( pageStore && pageStore.getNetFilteringSwitch() ) {
             newBits |= 0x01;
             if ( pageStore.largeMediaCount !== 0 ) {
@@ -130,7 +130,7 @@ const update = function(tabId = undefined) {
 //   looked up after closing a window.
 
 vAPI.contextMenu.onMustUpdate = async function(tabId = undefined) {
-    if ( ÂµBlock.userSettings.contextMenuEnabled === false ) {
+    if ( µBlock.userSettings.contextMenuEnabled === false ) {
         return update();
     }
     if ( tabId !== undefined ) {

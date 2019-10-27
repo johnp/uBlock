@@ -717,11 +717,11 @@ HNTrieContainer.prototype.HNTrieRef.prototype.needle = '';
         return;
     }
 
-    // Soft-dependency on ÂµBlock's advanced settings so that the code here can
+    // Soft-dependency on µBlock's advanced settings so that the code here can
     // be used outside of uBO (i.e. tests, benchmarks)
     if (
-        typeof ÂµBlock === 'object' &&
-        ÂµBlock.hiddenSettings.disableWebAssembly === true
+        typeof µBlock === 'object' &&
+        µBlock.hiddenSettings.disableWebAssembly === true
     ) {
         return;
     }
@@ -759,7 +759,7 @@ HNTrieContainer.prototype.HNTrieRef.prototype.needle = '';
 
 /******************************************************************************/
 
-ÂµBlock.HNTrieContainer = HNTrieContainer;
+µBlock.HNTrieContainer = HNTrieContainer;
 
 // end of local namespace
 // *****************************************************************************

@@ -26,7 +26,7 @@
 // The purpose of log filtering is to create ad hoc filtering rules, to
 // diagnose and assist in the creation of custom filters.
 
-ÂµBlock.URLNetFiltering = (( ) => {
+µBlock.URLNetFiltering = (( ) => {
 
 /*******************************************************************************
 
@@ -201,7 +201,7 @@ URLNetFiltering.prototype.evaluateZ = function(context, target, type) {
     if ( this.rules.size === 0 ) {
         return 0;
     }
-    ÂµBlock.decomposeHostname(context, this.decomposedSource);
+    µBlock.decomposeHostname(context, this.decomposedSource);
     for ( let shn of this.decomposedSource ) {
         this.context = shn;
         let entries = this.rules.get(shn + ' ' + type);
@@ -330,7 +330,7 @@ URLNetFiltering.prototype.toString = function() {
 
 URLNetFiltering.prototype.fromString = function(text) {
     this.reset();
-    const lineIter = new ÂµBlock.LineIterator(text);
+    const lineIter = new µBlock.LineIterator(text);
     while ( lineIter.eot() === false ) {
         this.addFromRuleParts(lineIter.next().trim().split(/\s+/));
     }
@@ -379,7 +379,7 @@ return URLNetFiltering;
 
 /******************************************************************************/
 
-ÂµBlock.sessionURLFiltering = new ÂµBlock.URLNetFiltering();
-ÂµBlock.permanentURLFiltering = new ÂµBlock.URLNetFiltering();
+µBlock.sessionURLFiltering = new µBlock.URLNetFiltering();
+µBlock.permanentURLFiltering = new µBlock.URLNetFiltering();
 
 /******************************************************************************/

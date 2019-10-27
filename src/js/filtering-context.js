@@ -23,8 +23,8 @@
 
 /******************************************************************************/
 
-ÂµBlock.FilteringContext = function(other) {
-    if ( other instanceof ÂµBlock.FilteringContext ) {
+µBlock.FilteringContext = function(other) {
+    if ( other instanceof µBlock.FilteringContext ) {
         return this.fromFilteringContext(other);
     }
     this.tstamp = 0;
@@ -44,9 +44,9 @@
     this.filter = undefined;
 };
 
-ÂµBlock.FilteringContext.prototype = {
+µBlock.FilteringContext.prototype = {
     fromTabId: function(tabId) {
-        const tabContext = ÂµBlock.tabContextManager.mustLookup(tabId);
+        const tabContext = µBlock.tabContextManager.mustLookup(tabId);
         this.tabOrigin = tabContext.origin;
         this.tabHostname = tabContext.rootHostname;
         this.tabDomain = tabContext.rootDomain;
@@ -59,7 +59,7 @@
     fromWebrequestDetails: function(details) {
         const tabId = details.tabId;
         if ( tabId > 0 && details.type === 'main_frame' ) {
-            ÂµBlock.tabContextManager.push(tabId, details.url);
+            µBlock.tabContextManager.push(tabId, details.url);
         }
         this.fromTabId(tabId);
         this.realm = '';
@@ -76,7 +76,7 @@
             } else if ( details.documentUrl !== undefined ) {
                 this.setDocOriginFromURL(details.documentUrl);
             } else {
-                const pageStore = ÂµBlock.pageStoreFromTabId(this.tabId);
+                const pageStore = µBlock.pageStoreFromTabId(this.tabId);
                 const docStore = pageStore && pageStore.frames.get(this.docId);
                 if ( docStore ) {
                     this.docOrigin = undefined;
@@ -88,7 +88,7 @@
             }
         } else if ( details.documentUrl !== undefined ) {
             const origin = this.originFromURI(
-                ÂµBlock.normalizePageURL(0, details.documentUrl)
+                µBlock.normalizePageURL(0, details.documentUrl)
             );
             this.setDocOrigin(origin).setTabOrigin(origin);
         } else if ( this.docId === -1 || this.type.endsWith('_frame') ) {
@@ -118,7 +118,7 @@
         return this;
     },
     duplicate: function() {
-        return (new ÂµBlock.FilteringContext(this));
+        return (new µBlock.FilteringContext(this));
     },
     setRealm: function(a) {
         this.realm = a;
@@ -217,7 +217,7 @@
     },
     getTabOrigin: function() {
         if ( this.tabOrigin === undefined ) {
-            const tabContext = ÂµBlock.tabContextManager.mustLookup(this.tabId);
+            const tabContext = µBlock.tabContextManager.mustLookup(this.tabId);
             this.tabOrigin = tabContext.origin;
             this.tabHostname = tabContext.rootHostname;
             this.tabDomain = tabContext.rootDomain;
@@ -286,11 +286,11 @@
         if ( this.tabDomain === undefined ) {
             void this.getTabDomain();
         }
-        ÂµBlock.logger.writeOne(this);
+        µBlock.logger.writeOne(this);
     },
-    originFromURI: ÂµBlock.URI.originFromURI,
-    hostnameFromURI: ÂµBlock.URI.hostnameFromURI,
-    domainFromHostname: ÂµBlock.URI.domainFromHostname,
+    originFromURI: µBlock.URI.originFromURI,
+    hostnameFromURI: µBlock.URI.hostnameFromURI,
+    domainFromHostname: µBlock.URI.domainFromHostname,
 };
 
-ÂµBlock.filteringContext = new ÂµBlock.FilteringContext();
+µBlock.filteringContext = new µBlock.FilteringContext();

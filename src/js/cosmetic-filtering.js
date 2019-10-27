@@ -23,11 +23,11 @@
 
 /******************************************************************************/
 
-ÂµBlock.cosmeticFilteringEngine = (( ) => {
+µBlock.cosmeticFilteringEngine = (( ) => {
 
 /******************************************************************************/
 
-const Âµb = ÂµBlock;
+const µb = µBlock;
 const cosmeticSurveyingMissCountMax =
     parseInt(vAPI.localStorage.getItem('cosmeticSurveyingMissCountMax'), 10) ||
     15;
@@ -202,13 +202,13 @@ const FilterContainer = function() {
     this.selectorCacheTimer = null;
 
     // specific filters
-    this.specificFilters = new Âµb.staticExtFilteringEngine.HostnameBasedDB(2);
+    this.specificFilters = new µb.staticExtFilteringEngine.HostnameBasedDB(2);
 
     // temporary filters
     this.sessionFilterDB = new (
-        class extends Âµb.staticExtFilteringEngine.SessionDB {
+        class extends µb.staticExtFilteringEngine.SessionDB {
             compile(s) {
-                return Âµb.staticExtFilteringEngine.compileSelector(s);
+                return µb.staticExtFilteringEngine.compileSelector(s);
             }
         }
     )();
@@ -234,13 +234,13 @@ const FilterContainer = function() {
         canonical: 'highGenericHideSimple',
         dict: new Set(),
         str: '',
-        mru: new Âµb.MRUCache(16)
+        mru: new µb.MRUCache(16)
     };
     this.highlyGeneric.complex = {
         canonical: 'highGenericHideComplex',
         dict: new Set(),
         str: '',
-        mru: new Âµb.MRUCache(16)
+        mru: new µb.MRUCache(16)
     };
 
     // Short-lived: content is valid only during one function call. These
@@ -262,7 +262,7 @@ const FilterContainer = function() {
 // Reset all, thus reducing to a minimum memory footprint of the context.
 
 FilterContainer.prototype.reset = function() {
-    this.Âµburi = Âµb.URI;
+    this.µburi = µb.URI;
     this.frozen = false;
     this.acceptedCount = 0;
     this.discardedCount = 0;
@@ -424,7 +424,7 @@ FilterContainer.prototype.compileGenericHideSelector = function(
         }
     }
 
-    const compiled = Âµb.staticExtFilteringEngine.compileSelector(selector);
+    const compiled = µb.staticExtFilteringEngine.compileSelector(selector);
 
     // Invalid cosmetic filter, possible reasons:
     // - Bad syntax
@@ -439,13 +439,13 @@ FilterContainer.prototype.compileGenericHideSelector = function(
     if (
         compiled === undefined ||
         compiled !== selector &&
-        Âµb.staticExtFilteringEngine.compileSelector.pseudoclass !== true
+        µb.staticExtFilteringEngine.compileSelector.pseudoclass !== true
     ) {
-        if ( Âµb.hiddenSettings.allowGenericProceduralFilters === true ) {
+        if ( µb.hiddenSettings.allowGenericProceduralFilters === true ) {
             return this.compileSpecificSelector('', parsed, writer);
         }
         const who = writer.properties.get('assetKey') || '?';
-        Âµb.logger.writeOne({
+        µb.logger.writeOne({
             realm: 'message',
             type: 'error',
             text: `Invalid generic cosmetic filter in ${who}: ##${selector}`
@@ -503,10 +503,10 @@ FilterContainer.prototype.compileGenericUnhideSelector = function(
     writer
 ) {
     // Procedural cosmetic filters are acceptable as generic exception filters.
-    const compiled = Âµb.staticExtFilteringEngine.compileSelector(parsed.suffix);
+    const compiled = µb.staticExtFilteringEngine.compileSelector(parsed.suffix);
     if ( compiled === undefined ) {
         const who = writer.properties.get('assetKey') || '?';
-        Âµb.logger.writeOne({
+        µb.logger.writeOne({
             realm: 'message',
             type: 'error',
             text: `Invalid cosmetic filter in ${who}: #@#${parsed.suffix}`
@@ -537,10 +537,10 @@ FilterContainer.prototype.compileSpecificSelector = function(
         unhide ^= 1;
     }
 
-    const compiled = Âµb.staticExtFilteringEngine.compileSelector(parsed.suffix);
+    const compiled = µb.staticExtFilteringEngine.compileSelector(parsed.suffix);
     if ( compiled === undefined ) {
         const who = writer.properties.get('assetKey') || '?';
-        Âµb.logger.writeOne({
+        µb.logger.writeOne({
             realm: 'message',
             type: 'error',
             text: `Invalid cosmetic filter in ${who}: ##${parsed.suffix}`
@@ -1165,7 +1165,7 @@ FilterContainer.prototype.getFilterCount = function() {
 /******************************************************************************/
 
 FilterContainer.prototype.benchmark = async function() {
-    const requests = await Âµb.loadBenchmarkDataset();
+    const requests = await µb.loadBenchmarkDataset();
     if ( Array.isArray(requests) === false || requests.length === 0 ) {
         console.info('No requests found to benchmark');
         return;
@@ -1188,9 +1188,9 @@ FilterContainer.prototype.benchmark = async function() {
         const request = requests[i];
         if ( request.cpt !== 'document' ) { continue; }
         count += 1;
-        details.hostname = Âµb.URI.hostnameFromURI(request.url);
-        details.domain = Âµb.URI.domainFromHostname(details.hostname);
-        details.entity = Âµb.URI.entityFromDomain(details.domain);
+        details.hostname = µb.URI.hostnameFromURI(request.url);
+        details.domain = µb.URI.domainFromHostname(details.hostname);
+        details.entity = µb.URI.entityFromDomain(details.domain);
         void this.retrieveSpecificSelectors(details, options);
     }
     const t1 = self.performance.now();

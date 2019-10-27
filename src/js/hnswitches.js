@@ -26,7 +26,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.HnSwitches = (function() {
+µBlock.HnSwitches = (function() {
 
 /******************************************************************************/
 
@@ -221,7 +221,7 @@ HnSwitches.prototype.evaluateZ = function(switchName, hostname) {
         return false;
     }
     this.n = switchName;
-    ÂµBlock.decomposeHostname(hostname, this.decomposedSource);
+    µBlock.decomposeHostname(hostname, this.decomposedSource);
     for ( let shn of this.decomposedSource ) {
         let bits = this.switches.get(shn);
         if ( bits !== undefined ) {
@@ -275,7 +275,7 @@ HnSwitches.prototype.toString = function() {
 /******************************************************************************/
 
 HnSwitches.prototype.fromString = function(text, append) {
-    let lineIter = new ÂµBlock.LineIterator(text);
+    let lineIter = new µBlock.LineIterator(text);
     if ( append !== true ) { this.reset(); }
     while ( lineIter.eot() === false ) {
         this.addFromRuleParts(lineIter.next().trim().split(/\s+/));
@@ -324,7 +324,7 @@ return HnSwitches;
 
 /******************************************************************************/
 
-ÂµBlock.sessionSwitches = new ÂµBlock.HnSwitches();
-ÂµBlock.permanentSwitches = new ÂµBlock.HnSwitches();
+µBlock.sessionSwitches = new µBlock.HnSwitches();
+µBlock.permanentSwitches = new µBlock.HnSwitches();
 
 /******************************************************************************/

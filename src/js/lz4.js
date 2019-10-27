@@ -32,7 +32,7 @@
 
 **/
 
-ÂµBlock.lz4Codec = (function() {         // >>>> Start of private namespace
+µBlock.lz4Codec = (function() {         // >>>> Start of private namespace
 
 /******************************************************************************/
 
@@ -44,7 +44,7 @@ let ttlTimer;
 let ttlDelay = 60000;
 
 const init = function() {
-    ttlDelay = ÂµBlock.hiddenSettings.autoUpdateAssetFetchPeriod * 1000 + 15000;
+    ttlDelay = µBlock.hiddenSettings.autoUpdateAssetFetchPeriod * 1000 + 15000;
     if ( lz4CodecInstance === null ) {
         return Promise.resolve(null);
     }
@@ -53,7 +53,7 @@ const init = function() {
     }
     if ( pendingInitialization === undefined ) {
         let flavor;
-        if ( ÂµBlock.hiddenSettings.disableWebAssembly === true ) {
+        if ( µBlock.hiddenSettings.disableWebAssembly === true ) {
             flavor = 'js';
         }
         pendingInitialization = lz4BlockCodec.createInstance(flavor)

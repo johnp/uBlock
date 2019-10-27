@@ -23,15 +23,15 @@
 
 /******************************************************************************/
 
-ÂµBlock.scriptletFilteringEngine = (function() {
-    const Âµb = ÂµBlock;
+µBlock.scriptletFilteringEngine = (function() {
+    const µb = µBlock;
     const duplicates = new Set();
-    const scriptletCache = new Âµb.MRUCache(32);
+    const scriptletCache = new µb.MRUCache(32);
     const reEscapeScriptArg = /[\\'"]/g;
 
-    const scriptletDB = new Âµb.staticExtFilteringEngine.HostnameBasedDB(1);
+    const scriptletDB = new µb.staticExtFilteringEngine.HostnameBasedDB(1);
     const sessionScriptletDB = new (
-        class extends Âµb.staticExtFilteringEngine.SessionDB {
+        class extends µb.staticExtFilteringEngine.SessionDB {
             compile(s) {
                 return s.slice(4, -1).trim();
             }
@@ -262,7 +262,7 @@
     };
 
     const logOne = function(isException, token, details) {
-        ÂµBlock.filteringContext
+        µBlock.filteringContext
             .duplicate()
             .fromTabId(details.tabId)
             .setRealm('cosmetic')
@@ -360,9 +360,9 @@
 
     api.retrieve = function(request) {
         if ( scriptletDB.size === 0 ) { return; }
-        if ( Âµb.hiddenSettings.ignoreScriptInjectFilters ) { return; }
+        if ( µb.hiddenSettings.ignoreScriptInjectFilters ) { return; }
 
-        const reng = Âµb.redirectEngine;
+        const reng = µb.redirectEngine;
         if ( !reng ) { return; }
 
         const hostname = request.hostname;
@@ -370,8 +370,8 @@
         // https://github.com/gorhill/uBlock/issues/2835
         //   Do not inject scriptlets if the site is under an `allow` rule.
         if (
-            Âµb.userSettings.advancedUserEnabled &&
-            Âµb.sessionFirewall.evaluateCellZY(hostname, hostname, '*') === 2
+            µb.userSettings.advancedUserEnabled &&
+            µb.sessionFirewall.evaluateCellZY(hostname, hostname, '*') === 2
         ) {
             return;
         }
@@ -391,7 +391,7 @@
         }
         if ( $scriptlets.size === 0 ) { return; }
 
-        const loggerEnabled = Âµb.logger.enabled;
+        const loggerEnabled = µb.logger.enabled;
 
         // Wholly disable scriptlet injection?
         if ( $exceptions.has('') ) {
@@ -421,7 +421,7 @@
 
         if ( out.length === 0 ) { return; }
 
-        if ( Âµb.hiddenSettings.debugScriptlets ) {
+        if ( µb.hiddenSettings.debugScriptlets ) {
             out.unshift('debugger;');
         }
 
@@ -444,21 +444,21 @@
 
     api.injectNow = function(details) {
         if ( typeof details.frameId !== 'number' ) { return; }
-        if ( Âµb.URI.isNetworkURI(details.url) === false ) { return; }
+        if ( µb.URI.isNetworkURI(details.url) === false ) { return; }
         const request = {
             tabId: details.tabId,
             frameId: details.frameId,
             url: details.url,
-            hostname: Âµb.URI.hostnameFromURI(details.url),
+            hostname: µb.URI.hostnameFromURI(details.url),
             domain: undefined,
             entity: undefined
         };
-        request.domain = Âµb.URI.domainFromHostname(request.hostname);
-        request.entity = Âµb.URI.entityFromDomain(request.domain);
-        const scriptlets = Âµb.scriptletFilteringEngine.retrieve(request);
+        request.domain = µb.URI.domainFromHostname(request.hostname);
+        request.entity = µb.URI.entityFromDomain(request.domain);
+        const scriptlets = µb.scriptletFilteringEngine.retrieve(request);
         if ( scriptlets === undefined ) { return; }
         let code = contentscriptCode.assemble(request.hostname, scriptlets);
-        if ( Âµb.hiddenSettings.debugScriptletInjector ) {
+        if ( µb.hiddenSettings.debugScriptletInjector ) {
             code = 'debugger;\n' + code;
         }
         vAPI.tabs.executeScript(details.tabId, {
@@ -478,7 +478,7 @@
     };
 
     api.benchmark = async function() {
-        const requests = await Âµb.loadBenchmarkDataset();
+        const requests = await µb.loadBenchmarkDataset();
         if ( Array.isArray(requests) === false || requests.length === 0 ) {
             console.info('No requests found to benchmark');
             return;
@@ -498,9 +498,9 @@
             if ( request.cpt !== 'document' ) { continue; }
             count += 1;
             details.url = request.url;
-            details.hostname = Âµb.URI.hostnameFromURI(request.url);
-            details.domain = Âµb.URI.domainFromHostname(details.hostname);
-            details.entity = Âµb.URI.entityFromDomain(details.domain);
+            details.hostname = µb.URI.hostnameFromURI(request.url);
+            details.domain = µb.URI.domainFromHostname(details.hostname);
+            details.entity = µb.URI.entityFromDomain(details.domain);
             void this.retrieve(details);
         }
         const t1 = self.performance.now();

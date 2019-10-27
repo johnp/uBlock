@@ -90,7 +90,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 
 /******************************************************************************/
 
-ÂµBlock.getNetFilteringSwitch = function(url) {
+µBlock.getNetFilteringSwitch = function(url) {
     const hostname = this.URI.hostnameFromURI(url);
     let key = hostname;
     for (;;) {
@@ -109,7 +109,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 
 /******************************************************************************/
 
-ÂµBlock.toggleNetFilteringSwitch = function(url, scope, newState) {
+µBlock.toggleNetFilteringSwitch = function(url, scope, newState) {
     const currentState = this.getNetFilteringSwitch(url);
     if ( newState === undefined ) {
         newState = !currentState;
@@ -179,7 +179,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 
 /******************************************************************************/
 
-ÂµBlock.arrayFromWhitelist = function(whitelist) {
+µBlock.arrayFromWhitelist = function(whitelist) {
     const out = new Set();
     for ( const bucket of whitelist.values() ) {
         for ( const directive of bucket ) {
@@ -189,13 +189,13 @@ const matchBucket = function(url, hostname, bucket, start) {
     return Array.from(out).sort((a, b) => a.localeCompare(b));
 };
 
-ÂµBlock.stringFromWhitelist = function(whitelist) {
+µBlock.stringFromWhitelist = function(whitelist) {
     return this.arrayFromWhitelist(whitelist).join('\n');
 };
 
 /******************************************************************************/
 
-ÂµBlock.whitelistFromArray = function(lines) {
+µBlock.whitelistFromArray = function(lines) {
     const whitelist = new Map();
 
     // Comment bucket must always be ready to be used.
@@ -273,13 +273,13 @@ const matchBucket = function(url, hostname, bucket, start) {
     return whitelist;
 };
 
-ÂµBlock.whitelistFromString = function(s) {
+µBlock.whitelistFromString = function(s) {
     return this.whitelistFromArray(s.split('\n'));
 };
 
 // https://github.com/gorhill/uBlock/issues/3717
-ÂµBlock.reWhitelistBadHostname = /[^a-z0-9.\-_\[\]:]/;
-ÂµBlock.reWhitelistHostnameExtractor = /([a-z0-9.\-_\[\]]+)(?::[\d*]+)?\/(?:[^\x00-\x20\/]|$)[^\x00-\x20]*$/;
+µBlock.reWhitelistBadHostname = /[^a-z0-9.\-_\[\]:]/;
+µBlock.reWhitelistHostnameExtractor = /([a-z0-9.\-_\[\]]+)(?::[\d*]+)?\/(?:[^\x00-\x20\/]|$)[^\x00-\x20]*$/;
 
 // end of local namespace
 // *****************************************************************************
@@ -289,7 +289,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 /******************************************************************************/
 /******************************************************************************/
 
-ÂµBlock.changeUserSettings = function(name, value) {
+µBlock.changeUserSettings = function(name, value) {
     let us = this.userSettings;
 
     // Return all settings if none specified.
@@ -400,7 +400,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 
 // https://www.reddit.com/r/uBlockOrigin/comments/8524cf/my_custom_scriptlets_doesnt_work_what_am_i_doing/
 
-ÂµBlock.changeHiddenSettings = function(hs) {
+µBlock.changeHiddenSettings = function(hs) {
     const mustReloadResources =
         hs.userResourcesLocation !== this.hiddenSettings.userResourcesLocation;
     this.hiddenSettings = hs;
@@ -414,7 +414,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 
 /******************************************************************************/
 
-ÂµBlock.elementPickerExec = async function(tabId, targetElement, zap = false) {
+µBlock.elementPickerExec = async function(tabId, targetElement, zap = false) {
     if ( vAPI.isBehindTheSceneTabId(tabId) ) { return; }
 
     this.epickerArgs.target = targetElement || '';
@@ -444,7 +444,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 // Always set own rules, trying to be fancy to avoid setting seemingly
 // (but not really) redundant rules led to this issue.
 
-ÂµBlock.toggleFirewallRule = function(details) {
+µBlock.toggleFirewallRule = function(details) {
     let { srcHostname, desHostname, requestType, action } = details;
 
     if ( action !== 0 ) {
@@ -508,7 +508,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 
 /******************************************************************************/
 
-ÂµBlock.toggleURLFilteringRule = function(details) {
+µBlock.toggleURLFilteringRule = function(details) {
     let changed = this.sessionURLFiltering.setRule(
         details.context,
         details.url,
@@ -535,7 +535,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 
 /******************************************************************************/
 
-ÂµBlock.toggleHostnameSwitch = function(details) {
+µBlock.toggleHostnameSwitch = function(details) {
     let changed = this.sessionSwitches.toggleZ(
         details.name,
         details.hostname,
@@ -578,7 +578,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 
 /******************************************************************************/
 
-ÂµBlock.blockingModeFromHostname = function(hn) {
+µBlock.blockingModeFromHostname = function(hn) {
     let bits = 0;
     if ( this.sessionSwitches.evaluateZ('no-scripting', hn) ) {
         bits |= 0b00000010;
@@ -598,9 +598,9 @@ const matchBucket = function(url, hostname, bucket, start) {
     return bits;
 };
 
-ÂµBlock.parseBlockingProfiles = (( ) => {
+µBlock.parseBlockingProfiles = (( ) => {
     const parse = function() {
-        const s = ÂµBlock.hiddenSettings.blockingProfiles;
+        const s = µBlock.hiddenSettings.blockingProfiles;
         const profiles = [];
         s.split(/\s+/).forEach(s => {
             let pos = s.indexOf('/');
@@ -612,8 +612,8 @@ const matchBucket = function(url, hostname, bucket, start) {
             const color = s.slice(pos + 1);
             profiles.push({ bits, color: color !== '' ? color : '#666' });
         });
-        ÂµBlock.liveBlockingProfiles = profiles;
-        ÂµBlock.blockingProfileColorCache.clear();
+        µBlock.liveBlockingProfiles = profiles;
+        µBlock.blockingProfileColorCache.clear();
     };
 
     parse();
@@ -630,7 +630,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 //   sensitive to the removal of DOM nodes which may match injected
 //   cosmetic filters.
 
-ÂµBlock.logCosmeticFilters = function(tabId, frameId) {
+µBlock.logCosmeticFilters = function(tabId, frameId) {
     vAPI.tabs.executeScript(tabId, {
         file: '/js/scriptlets/cosmetic-logger.js',
         frameId: frameId,
@@ -640,7 +640,7 @@ const matchBucket = function(url, hostname, bucket, start) {
 
 /******************************************************************************/
 
-ÂµBlock.scriptlets = (function() {
+µBlock.scriptlets = (function() {
     const pendingEntries = new Map();
 
     const Entry = class {

@@ -33,7 +33,7 @@ if ( vAPI.webextFlavor === undefined ) {
 
 /******************************************************************************/
 
-const ÂµBlock = (( ) => { // jshint ignore:line
+const µBlock = (( ) => { // jshint ignore:line
 
     const hiddenSettingsDefault = {
         allowGenericProceduralFilters: false,

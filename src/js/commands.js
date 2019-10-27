@@ -25,8 +25,8 @@
 
 /******************************************************************************/
 
-ÂµBlock.canUseShortcuts = vAPI.commands instanceof Object;
-ÂµBlock.canUpdateShortcuts = ÂµBlock.canUseShortcuts &&
+µBlock.canUseShortcuts = vAPI.commands instanceof Object;
+µBlock.canUpdateShortcuts = µBlock.canUseShortcuts &&
                             typeof vAPI.commands.update === 'function';
 
 /******************************************************************************/
@@ -36,7 +36,7 @@
 // *****************************************************************************
 // start of local namespace
 
-if ( ÂµBlock.canUseShortcuts === false ) { return; }
+if ( µBlock.canUseShortcuts === false ) { return; }
 
 const relaxBlockingMode = (( ) => {
     const reloadTimers = new Map();
@@ -44,15 +44,15 @@ const relaxBlockingMode = (( ) => {
     return function(tab) {
         if ( tab instanceof Object === false || tab.id <= 0 ) { return; }
 
-        const Âµb = ÂµBlock;
-        const normalURL = Âµb.normalizePageURL(tab.id, tab.url);
+        const µb = µBlock;
+        const normalURL = µb.normalizePageURL(tab.id, tab.url);
 
-        if ( Âµb.getNetFilteringSwitch(normalURL) === false ) { return; }
+        if ( µb.getNetFilteringSwitch(normalURL) === false ) { return; }
 
-        const hn = Âµb.URI.hostnameFromURI(normalURL);
-        const curProfileBits = Âµb.blockingModeFromHostname(hn);
+        const hn = µb.URI.hostnameFromURI(normalURL);
+        const curProfileBits = µb.blockingModeFromHostname(hn);
         let newProfileBits;
-        for ( const profile of Âµb.liveBlockingProfiles ) {
+        for ( const profile of µb.liveBlockingProfiles ) {
             if ( (curProfileBits & profile.bits & ~1) !== curProfileBits ) {
                 newProfileBits = profile.bits;
                 break;
@@ -66,18 +66,18 @@ const relaxBlockingMode = (( ) => {
             (curProfileBits & 0b00000010) !== 0 &&
             (newProfileBits & 0b00000010) === 0
         ) {
-            Âµb.toggleHostnameSwitch({
+            µb.toggleHostnameSwitch({
                 name: 'no-scripting',
                 hostname: hn,
                 state: false,
             });
         }
-        if ( Âµb.userSettings.advancedUserEnabled ) {
+        if ( µb.userSettings.advancedUserEnabled ) {
             if (
                 (curProfileBits & 0b00000100) !== 0 &&
                 (newProfileBits & 0b00000100) === 0
             ) {
-                Âµb.toggleFirewallRule({
+                µb.toggleFirewallRule({
                     srcHostname: hn,
                     desHostname: '*',
                     requestType: '3p',
@@ -88,7 +88,7 @@ const relaxBlockingMode = (( ) => {
                 (curProfileBits & 0b00001000) !== 0 &&
                 (newProfileBits & 0b00001000) === 0
             ) {
-                Âµb.toggleFirewallRule({
+                µb.toggleFirewallRule({
                     srcHostname: hn,
                     desHostname: '*',
                     requestType: '3p-script',
@@ -99,7 +99,7 @@ const relaxBlockingMode = (( ) => {
                 (curProfileBits & 0b00010000) !== 0 &&
                 (newProfileBits & 0b00010000) === 0
             ) {
-                Âµb.toggleFirewallRule({
+                µb.toggleFirewallRule({
                     srcHostname: hn,
                     desHostname: '*',
                     requestType: '3p-frame',
@@ -129,15 +129,15 @@ const relaxBlockingMode = (( ) => {
 })();
 
 vAPI.commands.onCommand.addListener(async command => {
-    const Âµb = ÂµBlock;
+    const µb = µBlock;
 
     switch ( command ) {
     case 'launch-element-picker':
     case 'launch-element-zapper': {
         const tab = await vAPI.tabs.getCurrent();
         if ( tab instanceof Object === false ) { return; }
-        Âµb.epickerArgs.mouse = false;
-        Âµb.elementPickerExec(
+        µb.epickerArgs.mouse = false;
+        µb.elementPickerExec(
             tab.id,
             undefined,
             command === 'launch-element-zapper'
@@ -150,7 +150,7 @@ vAPI.commands.onCommand.addListener(async command => {
         const hash = tab.url.startsWith(vAPI.getURL(''))
             ? ''
             : `#_+${tab.id}`;
-        Âµb.openNewTab({
+        µb.openNewTab({
             url: `logger-ui.html${hash}`,
             select: true,
             index: -1

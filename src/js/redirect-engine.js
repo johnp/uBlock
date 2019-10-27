@@ -23,7 +23,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.redirectEngine = (( ) => {
+µBlock.redirectEngine = (( ) => {
 
 /******************************************************************************/
 /******************************************************************************/
@@ -478,7 +478,7 @@ RedirectEngine.prototype.compileRuleFromStaticFilter = function(line) {
             continue;
         }
         if ( (option === 'first-party' || option === '1p') && deshn !== '' ) {
-            srchns.push(ÂµBlock.URI.domainFromHostname(deshn) || deshn);
+            srchns.push(µBlock.URI.domainFromHostname(deshn) || deshn);
             continue;
         }
         // One and only one type must be specified.
@@ -561,7 +561,7 @@ RedirectEngine.prototype.toSelfie = function(path) {
         }
         rules.push(rule);
     }
-    return ÂµBlock.assets.put(
+    return µBlock.assets.put(
         `${path}/main`,
         JSON.stringify({
             rules: rules,
@@ -574,7 +574,7 @@ RedirectEngine.prototype.toSelfie = function(path) {
 /******************************************************************************/
 
 RedirectEngine.prototype.fromSelfie = async function(path) {
-    const result = await ÂµBlock.assets.get(`${path}/main`);
+    const result = await µBlock.assets.get(`${path}/main`);
     let selfie;
     try {
         selfie = JSON.parse(result.content);
@@ -607,7 +607,7 @@ RedirectEngine.prototype.resourceContentFromName = function(name, mime) {
 //   Consider 'none' a reserved keyword, to be used to disable redirection.
 
 RedirectEngine.prototype.resourcesFromString = function(text) {
-    const lineIter = new ÂµBlock.LineIterator(removeTopCommentBlock(text));
+    const lineIter = new µBlock.LineIterator(removeTopCommentBlock(text));
     const reNonEmptyLine = /\S/;
     let fields, encoded, details;
 
@@ -656,7 +656,7 @@ RedirectEngine.prototype.resourcesFromString = function(text) {
 
         const name = this.aliases.get(fields[0]) || fields[0];
         const mime = fields[1];
-        const content = ÂµBlock.orphanizeString(
+        const content = µBlock.orphanizeString(
             fields.slice(2).join(encoded ? '' : '\n')
         );
 
@@ -678,7 +678,7 @@ RedirectEngine.prototype.resourcesFromString = function(text) {
     if ( fields !== undefined ) {
         const name = fields[0];
         const mime = fields[1];
-        const content = ÂµBlock.orphanizeString(
+        const content = µBlock.orphanizeString(
             fields.slice(2).join(encoded ? '' : '\n')
         );
         this.resources.set(
@@ -701,13 +701,13 @@ const removeTopCommentBlock = function(text) {
 
 RedirectEngine.prototype.loadBuiltinResources = function() {
     // TODO: remove once usage of uBO 1.20.4 is widespread.
-    ÂµBlock.assets.remove('ublock-resources');
+    µBlock.assets.remove('ublock-resources');
 
     this.resources = new Map();
     this.aliases = new Map();
 
     const fetches = [
-        ÂµBlock.assets.fetchText(
+        µBlock.assets.fetchText(
             '/assets/resources/scriptlets.js'
         ).then(result => {
             const content = result.content;
@@ -763,7 +763,7 @@ RedirectEngine.prototype.loadBuiltinResources = function() {
             continue;
         }
         fetches.push(
-            ÂµBlock.assets.fetch(
+            µBlock.assets.fetch(
                 `/web_accessible_resources/${name}${vAPI.warSecret()}`,
                 { responseType: details.data }
             ).then(
@@ -780,7 +780,7 @@ RedirectEngine.prototype.loadBuiltinResources = function() {
 const resourcesSelfieVersion = 5;
 
 RedirectEngine.prototype.selfieFromResources = function() {
-    ÂµBlock.assets.put(
+    µBlock.assets.put(
         'compiled/redirectEngine/resources',
         JSON.stringify({
             version: resourcesSelfieVersion,
@@ -791,7 +791,7 @@ RedirectEngine.prototype.selfieFromResources = function() {
 };
 
 RedirectEngine.prototype.resourcesFromSelfie = async function() {
-    const result = await ÂµBlock.assets.get('compiled/redirectEngine/resources');
+    const result = await µBlock.assets.get('compiled/redirectEngine/resources');
     let selfie;
     try {
         selfie = JSON.parse(result.content);
@@ -813,10 +813,10 @@ RedirectEngine.prototype.resourcesFromSelfie = async function() {
 };
 
 RedirectEngine.prototype.invalidateResourcesSelfie = function() {
-    ÂµBlock.assets.remove('compiled/redirectEngine/resources');
+    µBlock.assets.remove('compiled/redirectEngine/resources');
 
     // TODO: obsolete, remove eventually
-    ÂµBlock.cacheStorage.remove('resourcesSelfie');
+    µBlock.cacheStorage.remove('resourcesSelfie');
 };
 
 /******************************************************************************/

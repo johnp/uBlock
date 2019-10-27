@@ -41,7 +41,7 @@
 // Benchmark for string-based tokens vs. safe-integer token values:
 //   https://gorhill.github.io/obj-vs-set-vs-map/tokenize-to-str-vs-to-int.html
 
-ÂµBlock.urlTokenizer = new (class {
+µBlock.urlTokenizer = new (class {
     constructor() {
         this._chars = '0123456789%abcdefghijklmnopqrstuvwxyz';
         this._validTokenChars = new Uint8Array(128);
@@ -133,14 +133,14 @@
     }
 
     toSelfie() {
-        return ÂµBlock.base64.encode(
+        return µBlock.base64.encode(
             this.knownTokens.buffer,
             this.knownTokens.byteLength
         );
     }
 
     fromSelfie(selfie) {
-        return ÂµBlock.base64.decode(selfie, this.knownTokens.buffer);
+        return µBlock.base64.decode(selfie, this.knownTokens.buffer);
     }
 
     // https://github.com/chrisaljoudi/uBlock/issues/1118
@@ -192,7 +192,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.formatCount = function(count) {
+µBlock.formatCount = function(count) {
     if ( typeof count !== 'number' ) {
         return '';
     }
@@ -217,7 +217,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.dateNowToSensibleString = function() {
+µBlock.dateNowToSensibleString = function() {
     const now = new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000);
     return now.toISOString().replace(/\.\d+Z$/, '')
                             .replace(/:/g, '.')
@@ -226,7 +226,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.LineIterator = class {
+µBlock.LineIterator = class {
     constructor(text, offset) {
         this.text = text;
         this.textLen = this.text.length;
@@ -260,7 +260,7 @@
 // The field iterator is less CPU-intensive than when using native
 // String.split().
 
-ÂµBlock.FieldIterator = class {
+µBlock.FieldIterator = class {
     constructor(sep) {
         this.text = '';
         this.sep = sep;
@@ -288,7 +288,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.CompiledLineIO = {
+µBlock.CompiledLineIO = {
     serialize: JSON.stringify,
     unserialize: JSON.parse,
     blockStartPrefix: '#block-start-',  // ensure no special regex characters
@@ -296,7 +296,7 @@
 
     Writer: class {
         constructor() {
-            this.io = ÂµBlock.CompiledLineIO;
+            this.io = µBlock.CompiledLineIO;
             this.blockId = undefined;
             this.block = undefined;
             this.stringifier = this.io.serialize;
@@ -335,7 +335,7 @@
 
     Reader: class {
         constructor(raw, blockId) {
-            this.io = ÂµBlock.CompiledLineIO;
+            this.io = µBlock.CompiledLineIO;
             this.block = '';
             this.len = 0;
             this.offset = 0;
@@ -391,7 +391,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.openNewTab = function(details) {
+µBlock.openNewTab = function(details) {
     if ( details.url.startsWith('logger-ui.html') ) {
         if ( details.shiftKey ) {
             this.changeUserSettings(
@@ -421,7 +421,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.MRUCache = class {
+µBlock.MRUCache = class {
     constructor(size) {
         this.size = size;
         this.array = [];
@@ -465,13 +465,13 @@
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 
-ÂµBlock.escapeRegex = function(s) {
+µBlock.escapeRegex = function(s) {
     return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };
 
 /******************************************************************************/
 
-ÂµBlock.decomposeHostname = (( ) => {
+µBlock.decomposeHostname = (( ) => {
     // For performance purpose, as simple tests as possible
     const reHostnameVeryCoarse = /[g-z_-]/;
     const reIPv4VeryCoarse = /\.\d+$/;
@@ -525,7 +525,7 @@
 
 // TODO: evaluate using TextEncoder/TextDecoder
 
-ÂµBlock.orphanizeString = function(s) {
+µBlock.orphanizeString = function(s) {
     return JSON.parse(JSON.stringify(s));
 };
 
@@ -542,7 +542,7 @@
 //   JSON string. The fallback can be removed once min supported version is
 //   above 59.
 
-ÂµBlock.base64 = new (class {
+µBlock.base64 = new (class {
     constructor() {
         this.valToDigit = new Uint8Array(64);
         this.digitToVal = new Uint8Array(128);
@@ -598,7 +598,7 @@
             return outbuf;
         }
         if ( instr.startsWith(this.magic) === false ) {
-            throw new Error('Invalid ÂµBlock.base64 encoding');
+            throw new Error('Invalid µBlock.base64 encoding');
         }
         const inputLength = instr.length;
         const outbuf = arrbuf instanceof ArrayBuffer === false
@@ -606,7 +606,7 @@
             : new Uint32Array(arrbuf);
         let i = instr.indexOf(' ', this.magic.length) + 1;
         if ( i === -1 ) {
-            throw new Error('Invalid ÂµBlock.base64 encoding');
+            throw new Error('Invalid µBlock.base64 encoding');
         }
         let j = 0;
         for (;;) {
@@ -651,7 +651,7 @@
 // will be looked-up by the method below to launch a benchmark session.
 //
 // From uBO's dev console, launch the benchmark:
-//   ÂµBlock.staticNetFilteringEngine.benchmark();
+//   µBlock.staticNetFilteringEngine.benchmark();
 //
 // The advanced setting `consoleLogLevel` must be set to `info` to see the
 // results in uBO's dev console, see:
@@ -668,7 +668,7 @@
 // Rename ./tmp/requests.json.gz to something else if you no longer want
 // ./assets/requests.json in the build.
 
-ÂµBlock.loadBenchmarkDataset = (( ) => {
+µBlock.loadBenchmarkDataset = (( ) => {
     let datasetPromise;
     let ttlTimer;
 
@@ -689,10 +689,10 @@
 
         console.info(`Loading benchmark dataset...`);
         const url = vAPI.getURL('/assets/requests.json');
-        datasetPromise = ÂµBlock.assets.fetchText(url).then(details => {
+        datasetPromise = µBlock.assets.fetchText(url).then(details => {
             console.info(`Parsing benchmark dataset...`);
             const requests = [];
-            const lineIter = new ÂµBlock.LineIterator(details.content);
+            const lineIter = new µBlock.LineIterator(details.content);
             while ( lineIter.eot() === false ) {
                 let request;
                 try {
@@ -715,7 +715,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.fireDOMEvent = function(name) {
+µBlock.fireDOMEvent = function(name) {
     if (
         window instanceof Object &&
         window.dispatchEvent instanceof Function &&
@@ -727,7 +727,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.getMessageSenderDetails = function(sender) {
+µBlock.getMessageSenderDetails = function(sender) {
     const r = {};
     if ( sender instanceof Object ) {
         r.url = sender.url;

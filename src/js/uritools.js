@@ -33,7 +33,7 @@ Naming convention from https://en.wikipedia.org/wiki/URI_scheme#Examples
 
 /******************************************************************************/
 
-ÂµBlock.URI = (function() {
+µBlock.URI = (function() {
 
 /******************************************************************************/
 
@@ -161,7 +161,7 @@ URI.set = function(uri) {
     this.fragment = matches[5] !== undefined ? matches[5].slice(1) : '';
 
     // Assume very simple authority, i.e. just a hostname (highest likelihood
-    // case for ÂµBlock)
+    // case for µBlock)
     if ( reHostFromNakedAuthority.test(this.authority) ) {
         this.hostname = this.authority;
         this.port = '';
@@ -260,7 +260,7 @@ URI.hostnameFromURI = function(uri) {
     matches = reAuthorityFromURI.exec(uri);
     if ( matches === null ) { return ''; }
     const authority = matches[1].slice(2);
-    // Assume very simple authority (most common case for ÂµBlock)
+    // Assume very simple authority (most common case for µBlock)
     if ( reHostFromNakedAuthority.test(authority) ) {
         return authority.toLowerCase();
     }
@@ -332,7 +332,7 @@ const reNetworkScheme = /^(?:ftps?|https?|wss?)$/;
 
 /******************************************************************************/
 
-// Normalize the way ÂµBlock expects it
+// Normalize the way µBlock expects it
 
 URI.normalizedURI = function() {
     // Will be removed:

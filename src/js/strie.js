@@ -128,7 +128,7 @@ const toSegmentInfo = (aL, l, r) => ((r - l) << 24) | (aL + l);
 const roundToPageSize = v => (v + PAGE_SIZE-1) & ~(PAGE_SIZE-1);
 
 
-ÂµBlock.BidiTrieContainer = class {
+µBlock.BidiTrieContainer = class {
 
     constructor(details, extraHandler) {
         if ( details instanceof Object === false ) { details = {}; }
@@ -796,7 +796,7 @@ const roundToPageSize = v => (v + PAGE_SIZE-1) & ~(PAGE_SIZE-1);
 
 */
 
-ÂµBlock.BidiTrieContainer.prototype.STrieRef = class {
+µBlock.BidiTrieContainer.prototype.STrieRef = class {
     constructor(container, iroot, size) {
         this.container = container;
         this.iroot = iroot;

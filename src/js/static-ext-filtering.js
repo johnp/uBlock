@@ -50,8 +50,8 @@
 
 **/
 
-ÂµBlock.staticExtFilteringEngine = (( ) => {
-    const Âµb = ÂµBlock;
+µBlock.staticExtFilteringEngine = (( ) => {
+    const µb = µBlock;
     const reHasUnicode = /[^\x00-\x7F]/;
     const reParseRegexLiteral = /^\/(.+)\/([imu]+)?$/;
     const emptyArray = [];
@@ -495,14 +495,14 @@
 
     const api = {
         get acceptedCount() {
-            return Âµb.cosmeticFilteringEngine.acceptedCount +
-                   Âµb.scriptletFilteringEngine.acceptedCount +
-                   Âµb.htmlFilteringEngine.acceptedCount;
+            return µb.cosmeticFilteringEngine.acceptedCount +
+                   µb.scriptletFilteringEngine.acceptedCount +
+                   µb.htmlFilteringEngine.acceptedCount;
         },
         get discardedCount() {
-            return Âµb.cosmeticFilteringEngine.discardedCount +
-                   Âµb.scriptletFilteringEngine.discardedCount +
-                   Âµb.htmlFilteringEngine.discardedCount;
+            return µb.cosmeticFilteringEngine.discardedCount +
+                   µb.scriptletFilteringEngine.discardedCount +
+                   µb.htmlFilteringEngine.discardedCount;
         },
     };
 
@@ -676,17 +676,17 @@
 
     api.reset = function() {
         compileProceduralSelector.reset();
-        Âµb.cosmeticFilteringEngine.reset();
-        Âµb.scriptletFilteringEngine.reset();
-        Âµb.htmlFilteringEngine.reset();
+        µb.cosmeticFilteringEngine.reset();
+        µb.scriptletFilteringEngine.reset();
+        µb.htmlFilteringEngine.reset();
         resetParsed(parsed);
     };
 
     api.freeze = function() {
         compileProceduralSelector.reset();
-        Âµb.cosmeticFilteringEngine.freeze();
-        Âµb.scriptletFilteringEngine.freeze();
-        Âµb.htmlFilteringEngine.freeze();
+        µb.cosmeticFilteringEngine.freeze();
+        µb.scriptletFilteringEngine.freeze();
+        µb.htmlFilteringEngine.freeze();
         resetParsed(parsed);
     };
 
@@ -875,7 +875,7 @@
 
         // New shorter syntax for scriptlet injection engine.
         if ( c0 === 0x2B /* '+' */ && suffix.startsWith('+js') ) {
-            Âµb.scriptletFilteringEngine.compile(parsed, writer);
+            µb.scriptletFilteringEngine.compile(parsed, writer);
             return true;
         }
 
@@ -883,43 +883,43 @@
         // TODO: evaluate converting Adguard's `$$` syntax into uBO's HTML
         //       filtering syntax.
         if ( c0 === 0x5E /* '^' */ ) {
-            Âµb.htmlFilteringEngine.compile(parsed, writer);
+            µb.htmlFilteringEngine.compile(parsed, writer);
             return true;
         }
 
         // Cosmetic filtering engine.
-        Âµb.cosmeticFilteringEngine.compile(parsed, writer);
+        µb.cosmeticFilteringEngine.compile(parsed, writer);
         return true;
     };
 
     api.fromCompiledContent = function(reader, options) {
-        Âµb.cosmeticFilteringEngine.fromCompiledContent(reader, options);
-        Âµb.scriptletFilteringEngine.fromCompiledContent(reader, options);
-        Âµb.htmlFilteringEngine.fromCompiledContent(reader, options);
+        µb.cosmeticFilteringEngine.fromCompiledContent(reader, options);
+        µb.scriptletFilteringEngine.fromCompiledContent(reader, options);
+        µb.htmlFilteringEngine.fromCompiledContent(reader, options);
     };
 
     api.toSelfie = function(path) {
-        return ÂµBlock.assets.put(
+        return µBlock.assets.put(
             `${path}/main`,
             JSON.stringify({
-                cosmetic: Âµb.cosmeticFilteringEngine.toSelfie(),
-                scriptlets: Âµb.scriptletFilteringEngine.toSelfie(),
-                html: Âµb.htmlFilteringEngine.toSelfie()
+                cosmetic: µb.cosmeticFilteringEngine.toSelfie(),
+                scriptlets: µb.scriptletFilteringEngine.toSelfie(),
+                html: µb.htmlFilteringEngine.toSelfie()
             })
         );
     };
 
     api.fromSelfie = function(path) {
-        return ÂµBlock.assets.get(`${path}/main`).then(details => {
+        return µBlock.assets.get(`${path}/main`).then(details => {
             let selfie;
             try {
                 selfie = JSON.parse(details.content);
             } catch (ex) {
             }
             if ( selfie instanceof Object === false ) { return false; }
-            Âµb.cosmeticFilteringEngine.fromSelfie(selfie.cosmetic);
-            Âµb.scriptletFilteringEngine.fromSelfie(selfie.scriptlets);
-            Âµb.htmlFilteringEngine.fromSelfie(selfie.html);
+            µb.cosmeticFilteringEngine.fromSelfie(selfie.cosmetic);
+            µb.scriptletFilteringEngine.fromSelfie(selfie.scriptlets);
+            µb.htmlFilteringEngine.fromSelfie(selfie.html);
             return true;
         });
     };

@@ -26,7 +26,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.Firewall = (function() {
+µBlock.Firewall = (function() {
 
 /******************************************************************************/
 
@@ -271,12 +271,12 @@ var is3rdParty = function(srcHostname, desHostname) {
            desHostname.charAt(desHostname.length - srcDomain.length - 1) !== '.';
 };
 
-var domainFromHostname = ÂµBlock.URI.domainFromHostname;
+var domainFromHostname = µBlock.URI.domainFromHostname;
 
 /******************************************************************************/
 
 Matrix.prototype.evaluateCellZ = function(srcHostname, desHostname, type) {
-    ÂµBlock.decomposeHostname(srcHostname, this.decomposedSource);
+    µBlock.decomposeHostname(srcHostname, this.decomposedSource);
     this.type = type;
     let bitOffset = typeBitOffsets[type];
     for ( let shn of this.decomposedSource ) {
@@ -307,7 +307,7 @@ Matrix.prototype.evaluateCellZY = function(srcHostname, desHostname, type) {
     // Precedence: from most specific to least specific
 
     // Specific-destination, any party, any type
-    ÂµBlock.decomposeHostname(desHostname, this.decomposedDestination);
+    µBlock.decomposeHostname(desHostname, this.decomposedDestination);
     for ( let dhn of this.decomposedDestination ) {
         if ( dhn === '*' ) { break; }
         this.y = dhn;
@@ -466,7 +466,7 @@ Matrix.prototype.toString = function() {
 /******************************************************************************/
 
 Matrix.prototype.fromString = function(text, append) {
-    var lineIter = new ÂµBlock.LineIterator(text);
+    var lineIter = new µBlock.LineIterator(text);
     if ( append !== true ) { this.reset(); }
     while ( lineIter.eot() === false ) {
         this.addFromRuleParts(lineIter.next().trim().split(/\s+/));
@@ -547,13 +547,13 @@ Matrix.prototype.fromSelfie = function(selfie) {
 /******************************************************************************/
 
 Matrix.prototype.benchmark = async function() {
-    const requests = await ÂµBlock.loadBenchmarkDataset();
+    const requests = await µBlock.loadBenchmarkDataset();
     if ( Array.isArray(requests) === false || requests.length === 0 ) {
         console.info('No requests found to benchmark');
         return;
     }
     console.info(`Benchmarking sessionFirewall.evaluateCellZY()...`);
-    const fctxt = ÂµBlock.filteringContext.duplicate();
+    const fctxt = µBlock.filteringContext.duplicate();
     const t0 = self.performance.now();
     for ( const request of requests ) {
         fctxt.setURL(request.url);
@@ -583,7 +583,7 @@ return Matrix;
 
 /******************************************************************************/
 
-ÂµBlock.sessionFirewall = new ÂµBlock.Firewall();
-ÂµBlock.permanentFirewall = new ÂµBlock.Firewall();
+µBlock.sessionFirewall = new µBlock.Firewall();
+µBlock.permanentFirewall = new µBlock.Firewall();
 
 /******************************************************************************/

@@ -26,12 +26,12 @@
 
 /******************************************************************************/
 
-ÂµBlock.staticNetFilteringEngine = (( ) => {
+µBlock.staticNetFilteringEngine = (( ) => {
 
 /******************************************************************************/
 
-const Âµb = ÂµBlock;
-const urlTokenizer = Âµb.urlTokenizer;
+const µb = µBlock;
+const urlTokenizer = µb.urlTokenizer;
 
 // fedcba9876543210
 //       |    | |||
@@ -319,8 +319,8 @@ const bidiTrie = (( ) => {
         );
     } catch(ex) {
     }
-    const trie = new Âµb.BidiTrieContainer(trieDetails, bidiTrieMatchExtra);
-    if ( Âµb.hiddenSettings.disableWebAssembly !== true ) {
+    const trie = new µb.BidiTrieContainer(trieDetails, bidiTrieMatchExtra);
+    if ( µb.hiddenSettings.disableWebAssembly !== true ) {
         trie.enableWASM();
     }
     return trie;
@@ -339,7 +339,7 @@ const bidiTrieOptimize = function(shrink = false) {
     Each filter class will register itself in the map.
 
     IMPORTANT: any change which modifies the mapping will have to be
-    reflected with ÂµBlock.systemSettings.compiledMagic.
+    reflected with µBlock.systemSettings.compiledMagic.
 
 */
 
@@ -1159,7 +1159,7 @@ const filterOrigin = new (class {
             );
         } catch(ex) {
         }
-        this.trieContainer = new Âµb.HNTrieContainer(trieDetails);
+        this.trieContainer = new µb.HNTrieContainer(trieDetails);
         this.strToUnitMap = new Map();
         this.gcTimer = undefined;
     }
@@ -1713,7 +1713,7 @@ FilterHostnameDict.trieContainer = (( ) => {
         );
     } catch(ex) {
     }
-    return new Âµb.HNTrieContainer(trieDetails);
+    return new µb.HNTrieContainer(trieDetails);
 })();
 
 registerFilterClass(FilterHostnameDict);
@@ -2685,7 +2685,7 @@ FilterContainer.prototype.reset = function() {
 FilterContainer.prototype.freeze = function() {
     const filterBucketId = FilterBucket.fid;
     const redirectTypeValue = typeNameToTypeValue.redirect;
-    const unserialize = Âµb.CompiledLineIO.unserialize;
+    const unserialize = µb.CompiledLineIO.unserialize;
     const units = filterUnits;
 
     for ( const line of this.goodFilters ) {
@@ -2700,7 +2700,7 @@ FilterContainer.prototype.freeze = function() {
         // Special cases: delegate to more specialized engines.
         // Redirect engine.
         if ( (bits & 0x1F0) === redirectTypeValue ) {
-            Âµb.redirectEngine.fromCompiledRule(args[1]);
+            µb.redirectEngine.fromCompiledRule(args[1]);
             continue;
         }
 
@@ -2808,26 +2808,26 @@ FilterContainer.prototype.toSelfie = function(path) {
     filterOrigin.optimize();
 
     return Promise.all([
-        Âµb.assets.put(
+        µb.assets.put(
             `${path}/FilterHostnameDict.trieContainer`,
-            FilterHostnameDict.trieContainer.serialize(Âµb.base64)
+            FilterHostnameDict.trieContainer.serialize(µb.base64)
         ),
-        Âµb.assets.put(
+        µb.assets.put(
             `${path}/FilterOrigin.trieContainer`,
-            filterOrigin.trieContainer.serialize(Âµb.base64)
+            filterOrigin.trieContainer.serialize(µb.base64)
         ),
-        Âµb.assets.put(
+        µb.assets.put(
             `${path}/bidiTrie`,
-            bidiTrie.serialize(Âµb.base64)
+            bidiTrie.serialize(µb.base64)
         ),
-        Âµb.assets.put(
+        µb.assets.put(
             `${path}/filterSequences`,
-            Âµb.base64.encode(
+            µb.base64.encode(
                 filterSequences.buffer,
                 filterSequenceWritePtr << 2
             )
         ),
-        Âµb.assets.put(
+        µb.assets.put(
             `${path}/main`,
             JSON.stringify({
                 processedFilterCount: this.processedFilterCount,
@@ -2850,36 +2850,36 @@ FilterContainer.prototype.toSelfie = function(path) {
 
 FilterContainer.prototype.fromSelfie = function(path) {
     return Promise.all([
-        Âµb.assets.get(`${path}/FilterHostnameDict.trieContainer`).then(details =>
+        µb.assets.get(`${path}/FilterHostnameDict.trieContainer`).then(details =>
             FilterHostnameDict.trieContainer.unserialize(
                 details.content,
-                Âµb.base64
+                µb.base64
             )
         ),
-        Âµb.assets.get(`${path}/FilterOrigin.trieContainer`).then(details =>
+        µb.assets.get(`${path}/FilterOrigin.trieContainer`).then(details =>
             filterOrigin.trieContainer.unserialize(
                 details.content,
-                Âµb.base64
+                µb.base64
             )
         ),
-        Âµb.assets.get(`${path}/bidiTrie`).then(details =>
+        µb.assets.get(`${path}/bidiTrie`).then(details =>
             bidiTrie.unserialize(
                 details.content,
-                Âµb.base64
+                µb.base64
             )
         ),
-        Âµb.assets.get(`${path}/filterSequences`).then(details => {
-            const size = Âµb.base64.decodeSize(details.content) >> 2;
+        µb.assets.get(`${path}/filterSequences`).then(details => {
+            const size = µb.base64.decodeSize(details.content) >> 2;
             if ( size === 0 ) { return false; }
             filterSequenceBufferResize(size);
-            filterSequences = Âµb.base64.decode(
+            filterSequences = µb.base64.decode(
                 details.content,
                 filterSequences.buffer
             );
             filterSequenceWritePtr = size;
             return true;
         }),
-        Âµb.assets.get(`${path}/main`).then(details => {
+        µb.assets.get(`${path}/main`).then(details => {
             let selfie;
             try {
                 selfie = JSON.parse(details.content);
@@ -2920,7 +2920,7 @@ FilterContainer.prototype.compile = function(raw, writer) {
     // Ignore filters with unsupported options
     if ( parsed.unsupported ) {
         const who = writer.properties.get('assetKey') || '?';
-        Âµb.logger.writeOne({
+        µb.logger.writeOne({
             realm: 'message',
             type: 'error',
             text: `Invalid network filter in ${who}: ${raw}`
@@ -2933,7 +2933,7 @@ FilterContainer.prototype.compile = function(raw, writer) {
         const result = this.compileRedirectRule(parsed, writer);
         if ( result === false ) {
             const who = writer.properties.get('assetKey') || '?';
-            Âµb.logger.writeOne({
+            µb.logger.writeOne({
                 realm: 'message',
                 type: 'error',
                 text: `Invalid redirect rule in ${who}: ${raw}`
@@ -3073,7 +3073,7 @@ FilterContainer.prototype.compileToAtomicFilter = function(
 /******************************************************************************/
 
 FilterContainer.prototype.compileRedirectRule = function(parsed, writer) {
-    const redirects = Âµb.redirectEngine.compileRuleFromStaticFilter(parsed.raw);
+    const redirects = µb.redirectEngine.compileRuleFromStaticFilter(parsed.raw);
     if ( Array.isArray(redirects) === false ) { return false; }
     writer.select(parsed.badFilter ? 1 : 0);
     const type = typeNameToTypeValue.redirect;
@@ -3355,7 +3355,7 @@ FilterContainer.prototype.matchStringElementHide = function(type, url) {
     this.$filterUnit = 0;
 
     // These registers will be used by various filters
-    $docHostname = $requestHostname = Âµb.URI.hostnameFromURI(url);
+    $docHostname = $requestHostname = µb.URI.hostnameFromURI(url);
 
     // Exception filters
     if ( this.realmMatchString(AllowAction, typeBits, FirstParty) ) {
@@ -3447,7 +3447,7 @@ FilterContainer.prototype.getFilterCount = function() {
 // action: 1=test, 2=record
 
 FilterContainer.prototype.benchmark = async function(action, target) {
-    const requests = await Âµb.loadBenchmarkDataset();
+    const requests = await µb.loadBenchmarkDataset();
 
     if ( Array.isArray(requests) === false || requests.length === 0 ) {
         console.info('No requests found to benchmark');
@@ -3455,7 +3455,7 @@ FilterContainer.prototype.benchmark = async function(action, target) {
     }
 
     console.info(`Benchmarking staticNetFilteringEngine.matchString()...`);
-    const fctxt = Âµb.filteringContext.duplicate();
+    const fctxt = µb.filteringContext.duplicate();
 
     if ( typeof target === 'number' ) {
         const request = requests[target];
@@ -3519,7 +3519,7 @@ FilterContainer.prototype.benchmark = async function(action, target) {
 /******************************************************************************/
 
 FilterContainer.prototype.test = function(docURL, type, url) {
-    const fctxt = Âµb.filteringContext.duplicate();
+    const fctxt = µb.filteringContext.duplicate();
     fctxt.setDocOriginFromURL(docURL);
     fctxt.setType(type);
     fctxt.setURL(url);
@@ -3712,7 +3712,7 @@ FilterContainer.prototype.filterClassHistogram = function() {
 /******************************************************************************/
 
 FilterContainer.prototype.tokenHistograms = async function() {
-    const requests = await Âµb.loadBenchmarkDataset();
+    const requests = await µb.loadBenchmarkDataset();
 
     if ( Array.isArray(requests) === false || requests.length === 0 ) {
         console.info('No requests found to benchmark');
@@ -3720,7 +3720,7 @@ FilterContainer.prototype.tokenHistograms = async function() {
     }
 
     console.info(`Computing token histograms...`);
-    const fctxt = Âµb.filteringContext.duplicate();
+    const fctxt = µb.filteringContext.duplicate();
 
     const missTokenMap = new Map();
     const hitTokenMap = new Map();

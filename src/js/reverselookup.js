@@ -23,7 +23,7 @@
 
 /******************************************************************************/
 
-ÂµBlock.staticFilteringReverseLookup = (( ) => {
+µBlock.staticFilteringReverseLookup = (( ) => {
 
 /******************************************************************************/
 
@@ -99,15 +99,15 @@ const initWorker = function() {
         });
     };
 
-    const Âµb = ÂµBlock;
-    for ( const listKey in Âµb.availableFilterLists ) {
-        if ( Âµb.availableFilterLists.hasOwnProperty(listKey) === false ) {
+    const µb = µBlock;
+    for ( const listKey in µb.availableFilterLists ) {
+        if ( µb.availableFilterLists.hasOwnProperty(listKey) === false ) {
             continue;
         }
-        const entry = Âµb.availableFilterLists[listKey];
+        const entry = µb.availableFilterLists[listKey];
         if ( entry.off === true ) { continue; }
         entries.set(listKey, {
-            title: listKey !== Âµb.userFiltersPath ?
+            title: listKey !== µb.userFiltersPath ?
                 entry.title :
                 vAPI.i18n('1pPageName'),
             supportURL: entry.supportURL || ''
@@ -120,7 +120,7 @@ const initWorker = function() {
     const promises = [];
     for ( const listKey of entries.keys() ) {
         promises.push(
-            Âµb.getCompiledFilterList(listKey).then(details => {
+            µb.getCompiledFilterList(listKey).then(details => {
                 onListLoaded(details);
             })
         );
@@ -133,9 +133,9 @@ const initWorker = function() {
 const fromNetFilter = async function(rawFilter) {
     if ( typeof rawFilter !== 'string' || rawFilter === '' ) { return; }
 
-    const Âµb = ÂµBlock;
-    const writer = new Âµb.CompiledLineIO.Writer();
-    if ( Âµb.staticNetFilteringEngine.compile(rawFilter, writer) === false ) {
+    const µb = µBlock;
+    const writer = new µb.CompiledLineIO.Writer();
+    if ( µb.staticNetFilteringEngine.compile(rawFilter, writer) === false ) {
         return;
     }
 
@@ -164,20 +164,20 @@ const fromCosmeticFilter = async function(details) {
     await initWorker();
 
     const id = messageId++;
-    const hostname = ÂµBlock.URI.hostnameFromURI(details.url);
+    const hostname = µBlock.URI.hostnameFromURI(details.url);
 
     worker.postMessage({
         what: 'fromCosmeticFilter',
         id: id,
-        domain: ÂµBlock.URI.domainFromHostname(hostname),
+        domain: µBlock.URI.domainFromHostname(hostname),
         hostname: hostname,
         ignoreGeneric:
-            ÂµBlock.staticNetFilteringEngine.matchStringElementHide(
+            µBlock.staticNetFilteringEngine.matchStringElementHide(
                 'generic',
                 details.url
             ) === 2,
         ignoreSpecific:
-            ÂµBlock.staticNetFilteringEngine.matchStringElementHide(
+            µBlock.staticNetFilteringEngine.matchStringElementHide(
                 'specific',
                 details.url
             ) === 2,

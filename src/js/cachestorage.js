@@ -50,7 +50,7 @@
 // https://github.com/uBlockOrigin/uBlock-issues/issues/409
 //   Allow forcing the use of webext storage on Firefox.
 
-ÂµBlock.cacheStorage = (function() {
+µBlock.cacheStorage = (function() {
 
     const STORAGE_NAME = 'uBlock0CacheStorage';
 
@@ -119,7 +119,7 @@
                     disconnect();
                 },
                 Math.max(
-                    ÂµBlock.hiddenSettings.autoUpdateAssetFetchPeriod * 2 * 1000,
+                    µBlock.hiddenSettings.autoUpdateAssetFetchPeriod * 2 * 1000,
                     180000
                 )
             );
@@ -204,7 +204,7 @@
                 keyvalStore[this.result.key] = this.result.value;
                 if ( this.result.value instanceof Blob === false ) { return; }
                 promises.push(
-                    ÂµBlock.lz4Codec.decode(
+                    µBlock.lz4Codec.decode(
                         this.result.key,
                         this.result.value
                     ).then(result => {
@@ -268,7 +268,7 @@
                 keyvalStore[entry.key] = entry.value;
                 if ( entry.value instanceof Blob === false ) { return; }
                 promises.push(
-                    ÂµBlock.lz4Codec.decode(
+                    µBlock.lz4Codec.decode(
                         entry.key,
                         entry.value
                     ).then(result => {
@@ -296,7 +296,7 @@
             const promises = [ getDb() ];
             const entries = [];
             const dontCompress =
-                ÂµBlock.hiddenSettings.cacheStorageCompression !== true;
+                µBlock.hiddenSettings.cacheStorageCompression !== true;
             const handleEncodingResult = result => {
                 entries.push({ key: result.key, value: result.data });
             };
@@ -308,7 +308,7 @@
                     continue;
                 }
                 promises.push(
-                    ÂµBlock.lz4Codec.encode(key, data).then(handleEncodingResult)
+                    µBlock.lz4Codec.encode(key, data).then(handleEncodingResult)
                 );
             }
             const finish = ( ) => {

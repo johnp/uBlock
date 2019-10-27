@@ -23,16 +23,16 @@
 
 /******************************************************************************/
 
-ÂµBlock.htmlFilteringEngine = (function() {
-    const Âµb = ÂµBlock;
+µBlock.htmlFilteringEngine = (function() {
+    const µb = µBlock;
     const pselectors = new Map();
     const duplicates = new Set();
 
-    const filterDB = new Âµb.staticExtFilteringEngine.HostnameBasedDB(2);
+    const filterDB = new µb.staticExtFilteringEngine.HostnameBasedDB(2);
     const sessionFilterDB = new (
-        class extends Âµb.staticExtFilteringEngine.SessionDB {
+        class extends µb.staticExtFilteringEngine.SessionDB {
             compile(s) {
-                return Âµb.staticExtFilteringEngine.compileSelector(s.slice(1));
+                return µb.staticExtFilteringEngine.compileSelector(s.slice(1));
             }
         }
     )();
@@ -225,7 +225,7 @@
     PSelector.prototype.invalid = false;
 
     const logOne = function(details, exception, selector) {
-        ÂµBlock.filteringContext
+        µBlock.filteringContext
             .duplicate()
             .fromTabId(details.tabId)
             .setRealm('cosmetic')
@@ -255,7 +255,7 @@
                 modified = true;
             }
         }
-        if ( modified && Âµb.logger.enabled ) {
+        if ( modified && µb.logger.enabled ) {
             logOne(details, 0, pselector.raw);
         }
         return modified;
@@ -272,7 +272,7 @@
                 modified = true;
             }
         }
-        if ( modified && Âµb.logger.enabled ) {
+        if ( modified && µb.logger.enabled ) {
             logOne(details, 0, selector);
         }
         return modified;
@@ -293,10 +293,10 @@
 
     api.compile = function(parsed, writer) {
         const selector = parsed.suffix.slice(1).trim();
-        const compiled = Âµb.staticExtFilteringEngine.compileSelector(selector);
+        const compiled = µb.staticExtFilteringEngine.compileSelector(selector);
         if ( compiled === undefined ) {
             const who = writer.properties.get('assetKey') || '?';
-            Âµb.logger.writeOne({
+            µb.logger.writeOne({
                 realm: 'message',
                 type: 'error',
                 text: `Invalid HTML filter in ${who}: ##${selector}`
@@ -324,7 +324,7 @@
 
     api.fromCompiledContent = function(reader) {
         // Don't bother loading filters if stream filtering is not supported.
-        if ( Âµb.canFilterResponseData === false ) { return; }
+        if ( µb.canFilterResponseData === false ) { return; }
 
         // 1002 = html filtering
         reader.select(1002);
@@ -352,8 +352,8 @@
         // https://github.com/gorhill/uBlock/issues/2835
         //   Do not filter if the site is under an `allow` rule.
         if (
-            Âµb.userSettings.advancedUserEnabled &&
-            Âµb.sessionFirewall.evaluateCellZY(hostname, hostname, '*') === 2
+            µb.userSettings.advancedUserEnabled &&
+            µb.sessionFirewall.evaluateCellZY(hostname, hostname, '*') === 2
         ) {
             return;
         }

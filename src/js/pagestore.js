@@ -37,7 +37,7 @@ To create a log of net requests
 
 /******************************************************************************/
 
-const Âµb = ÂµBlock;
+const µb = µBlock;
 
 /******************************************************************************/
 
@@ -166,10 +166,10 @@ const FrameStore = class {
     }
 
     init(frameURL) {
-        const Âµburi = Âµb.URI;
-        this.pageHostname = Âµburi.hostnameFromURI(frameURL);
+        const µburi = µb.URI;
+        this.pageHostname = µburi.hostnameFromURI(frameURL);
         this.pageDomain =
-            Âµburi.domainFromHostname(this.pageHostname) || this.pageHostname;
+            µburi.domainFromHostname(this.pageHostname) || this.pageHostname;
         return this;
     }
 
@@ -222,7 +222,7 @@ const PageStore = class {
     //   to the logger.
 
     init(tabId, context) {
-        const tabContext = Âµb.tabContextManager.mustLookup(tabId);
+        const tabContext = µb.tabContextManager.mustLookup(tabId);
         this.tabId = tabId;
 
         // If we are navigating from-to same site, remember whether large
@@ -255,8 +255,8 @@ const PageStore = class {
         //   initialized.
         // - If it has been initialized, we do not want to change the state
         //   of the current context.
-        const fctxt = Âµb.logger.enabled
-            ? Âµb.filteringContext
+        const fctxt = µb.logger.enabled
+            ? µb.filteringContext
                 .duplicate()
                 .fromTabId(tabId)
                 .setURL(tabContext.rawURL)
@@ -265,19 +265,19 @@ const PageStore = class {
         // https://github.com/uBlockOrigin/uBlock-issues/issues/314
         const masterSwitch = tabContext.getNetFilteringSwitch();
 
-        this.noCosmeticFiltering = Âµb.sessionSwitches.evaluateZ(
+        this.noCosmeticFiltering = µb.sessionSwitches.evaluateZ(
             'no-cosmetic-filtering',
             tabContext.rootHostname
         ) === true;
         if (
             masterSwitch &&
             this.noCosmeticFiltering &&
-            Âµb.logger.enabled &&
+            µb.logger.enabled &&
             context === 'tabCommitted'
         ) {
             fctxt.setRealm('cosmetic')
                  .setType('dom')
-                 .setFilter(Âµb.sessionSwitches.toLogData())
+                 .setFilter(µb.sessionSwitches.toLogData())
                  .toLogger();
         }
 
@@ -288,7 +288,7 @@ const PageStore = class {
         // When force refreshing a page, the page store data needs to be reset.
 
         // If the hostname changes, we can't merely just update the context.
-        const tabContext = Âµb.tabContextManager.mustLookup(this.tabId);
+        const tabContext = µb.tabContextManager.mustLookup(this.tabId);
         if ( tabContext.rootHostname !== this.tabHostname ) {
             context = '';
         }
@@ -361,7 +361,7 @@ const PageStore = class {
     }
 
     getNetFilteringSwitch() {
-        return Âµb.tabContextManager
+        return µb.tabContextManager
                  .mustLookup(this.tabId)
                  .getNetFilteringSwitch();
     }
@@ -371,7 +371,7 @@ const PageStore = class {
     }
 
     toggleNetFilteringSwitch(url, scope, state) {
-        Âµb.toggleNetFilteringSwitch(url, scope, state);
+        µb.toggleNetFilteringSwitch(url, scope, state);
         this.netFilteringCache.empty();
     }
 
@@ -381,14 +381,14 @@ const PageStore = class {
             allFrames: true,
             runAt: 'document_idle',
         });
-        Âµb.contextMenu.update(this.tabId);
+        µb.contextMenu.update(this.tabId);
     }
 
     temporarilyAllowLargeMediaElements(state) {
         this.largeMediaCount = 0;
-        Âµb.contextMenu.update(this.tabId);
+        µb.contextMenu.update(this.tabId);
         this.allowLargeMediaElementsUntil = state ? Date.now() + 86400000 : 0;
-        Âµb.scriptlets.injectDeep(this.tabId, 'load-large-media-all');
+        µb.scriptlets.injectDeep(this.tabId, 'load-large-media-all');
     }
 
     // https://github.com/gorhill/uBlock/issues/2053
@@ -403,7 +403,7 @@ const PageStore = class {
         if ( this.journalTimer === null ) {
             this.journalTimer = vAPI.setTimeout(
                 ( ) => { this.journalProcess(true); },
-                Âµb.hiddenSettings.requestJournalProcessPeriod
+                µb.hiddenSettings.requestJournalProcessPeriod
             );
         }
     }
@@ -428,7 +428,7 @@ const PageStore = class {
         }
         this.journalTimer = vAPI.setTimeout(
             ( ) => { this.journalProcess(true); },
-            Âµb.hiddenSettings.requestJournalProcessPeriod
+            µb.hiddenSettings.requestJournalProcessPeriod
         );
     }
 
@@ -461,8 +461,8 @@ const PageStore = class {
 
         // https://github.com/chrisaljoudi/uBlock/issues/905#issuecomment-76543649
         //   No point updating the badge if it's not being displayed.
-        if ( (aggregateCounts & 0xFFFF) && Âµb.userSettings.showIconBadge ) {
-            Âµb.updateToolbarIcon(this.tabId, 0x02);
+        if ( (aggregateCounts & 0xFFFF) && µb.userSettings.showIconBadge ) {
+            µb.updateToolbarIcon(this.tabId, 0x02);
         }
 
         // Everything before pivot does not originate from current page -- we
@@ -471,11 +471,11 @@ const PageStore = class {
             aggregateCounts += journal[i+1];
         }
         if ( aggregateCounts !== 0 ) {
-            Âµb.localSettings.blockedRequestCount +=
+            µb.localSettings.blockedRequestCount +=
                 aggregateCounts & 0xFFFF;
-            Âµb.localSettings.allowedRequestCount +=
+            µb.localSettings.allowedRequestCount +=
                 aggregateCounts >>> 16 & 0xFFFF;
-            Âµb.localSettingsLastModified = now;
+            µb.localSettingsLastModified = now;
         }
         journal.length = 0;
     }
@@ -518,32 +518,32 @@ const PageStore = class {
         }
 
         // Dynamic URL filtering.
-        let result = Âµb.sessionURLFiltering.evaluateZ(
+        let result = µb.sessionURLFiltering.evaluateZ(
             fctxt.getTabHostname(),
             fctxt.url,
             requestType
         );
-        if ( result !== 0 && Âµb.logger.enabled ) {
-            fctxt.filter = Âµb.sessionURLFiltering.toLogData();
+        if ( result !== 0 && µb.logger.enabled ) {
+            fctxt.filter = µb.sessionURLFiltering.toLogData();
         }
 
         // Dynamic hostname/type filtering.
-        if ( result === 0 && Âµb.userSettings.advancedUserEnabled ) {
-            result = Âµb.sessionFirewall.evaluateCellZY(
+        if ( result === 0 && µb.userSettings.advancedUserEnabled ) {
+            result = µb.sessionFirewall.evaluateCellZY(
                 fctxt.getTabHostname(),
                 fctxt.getHostname(),
                 requestType
             );
-            if ( result !== 0 && result !== 3 && Âµb.logger.enabled ) {
-                fctxt.filter = Âµb.sessionFirewall.toLogData();
+            if ( result !== 0 && result !== 3 && µb.logger.enabled ) {
+                fctxt.filter = µb.sessionFirewall.toLogData();
             }
         }
 
         // Static filtering has lowest precedence.
         if ( result === 0 || result === 3 ) {
-            result = Âµb.staticNetFilteringEngine.matchString(fctxt);
-            if ( result !== 0 && Âµb.logger.enabled ) {
-                fctxt.filter = Âµb.staticNetFilteringEngine.toLogData();
+            result = µb.staticNetFilteringEngine.matchString(fctxt);
+            if ( result !== 0 && µb.logger.enabled ) {
+                fctxt.filter = µb.staticNetFilteringEngine.toLogData();
             }
         }
 
@@ -561,13 +561,13 @@ const PageStore = class {
 
     filterCSPReport(fctxt) {
         if (
-            Âµb.sessionSwitches.evaluateZ(
+            µb.sessionSwitches.evaluateZ(
                 'no-csp-reports',
                 fctxt.getHostname()
             )
         ) {
-            if ( Âµb.logger.enabled ) {
-                fctxt.filter = Âµb.sessionSwitches.toLogData();
+            if ( µb.logger.enabled ) {
+                fctxt.filter = µb.sessionSwitches.toLogData();
             }
             return 1;
         }
@@ -579,13 +579,13 @@ const PageStore = class {
             this.remoteFontCount += 1;
         }
         if (
-            Âµb.sessionSwitches.evaluateZ(
+            µb.sessionSwitches.evaluateZ(
                 'no-remote-fonts',
                 fctxt.getTabHostname()
             ) !== false
         ) {
-            if ( Âµb.logger.enabled ) {
-                fctxt.filter = Âµb.sessionSwitches.toLogData();
+            if ( µb.logger.enabled ) {
+                fctxt.filter = µb.sessionSwitches.toLogData();
             }
             return 1;
         }
@@ -599,15 +599,15 @@ const PageStore = class {
         }
         if (
             netFiltering === false ||
-            Âµb.sessionSwitches.evaluateZ(
+            µb.sessionSwitches.evaluateZ(
                 'no-scripting',
                 fctxt.getTabHostname()
             ) === false
         ) {
             return 0;
         }
-        if ( Âµb.logger.enabled ) {
-            fctxt.filter = Âµb.sessionSwitches.toLogData();
+        if ( µb.logger.enabled ) {
+            fctxt.filter = µb.sessionSwitches.toLogData();
         }
         return 1;
     }
@@ -620,14 +620,14 @@ const PageStore = class {
             return 0;
         }
         if (
-            Âµb.sessionSwitches.evaluateZ(
+            µb.sessionSwitches.evaluateZ(
                 'no-large-media',
                 fctxt.getTabHostname()
             ) !== true
         ) {
             return 0;
         }
-        if ( (size >>> 10) < Âµb.userSettings.largeMediaSize ) {
+        if ( (size >>> 10) < µb.userSettings.largeMediaSize ) {
             return 0;
         }
 
@@ -639,17 +639,17 @@ const PageStore = class {
             }, 500);
         }
 
-        if ( Âµb.logger.enabled ) {
-            fctxt.filter = Âµb.sessionSwitches.toLogData();
+        if ( µb.logger.enabled ) {
+            fctxt.filter = µb.sessionSwitches.toLogData();
         }
 
         return 1;
     }
 
     getBlockedResources(request, response) {
-        const normalURL = Âµb.normalizePageURL(this.tabId, request.frameURL);
+        const normalURL = µb.normalizePageURL(this.tabId, request.frameURL);
         const resources = request.resources;
-        const fctxt = Âµb.filteringContext;
+        const fctxt = µb.filteringContext;
         fctxt.fromTabId(this.tabId)
              .setDocOriginFromURL(normalURL);
         // Force some resources to go through the filtering engine in order to
@@ -682,7 +682,7 @@ PageStore.prototype.collapsibleResources = new Set([
     'sub_frame',
 ]);
 
-Âµb.PageStore = PageStore;
+µb.PageStore = PageStore;
 
 /******************************************************************************/
 
